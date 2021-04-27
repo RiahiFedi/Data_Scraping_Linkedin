@@ -10,7 +10,6 @@ from time import sleep
 import parameters 
 from bs4 import BeautifulSoup
 
-
 # if field is present pass if field:pas if field is not present print text else:
 def validate_field(field):
     if type(field) is not str:
@@ -25,35 +24,33 @@ writer.writerow(['Name', 'Job Title', 'Company', 'Duration', 'Location', 'URL'])
 # specifies the path to the chromedriver.exe
 driver = webdriver.Chrome('C:/Users/fedir/Data_Scraping_Linkedin/chromedriver')
 
-def login_sequence():
 
-    
-    # driver.get method() will navigate to a page given by the URL address
-    driver.get('https://www.linkedin.com')
-    
-    # locate email form by_class_name
-    username = driver.find_element_by_id('session_key')
-    
-    # send_keys() to simulate key strokes
-    username.send_keys(parameters.linkedin_username)
-    
-    # sleep for 0.5 seconds
-    sleep(0.5)
-    
-    # locate password form by_class_name
-    password = driver.find_element_by_id('session_password')
-    
-    # send_keys() to simulate key strokes
-    password.send_keys(parameters.linkedin_password)
-    sleep(0.5)
-    
-    # locate submit button by_xpath
-    sign_in_button = driver.find_element_by_class_name('sign-in-form__submit-button')
-    
-    # .click() to mimic button click
-    sign_in_button.click()
+# driver.get method() will navigate to a page given by the URL address
+driver.get('https://www.linkedin.com')
 
-login_sequence()
+# locate email form by_class_name
+username = driver.find_element_by_id('session_key')
+
+# send_keys() to simulate key strokes
+username.send_keys(parameters.linkedin_username)
+
+# sleep for 0.5 seconds
+sleep(0.5)
+
+# locate password form by_class_name
+password = driver.find_element_by_id('session_password')
+
+# send_keys() to simulate key strokes
+password.send_keys(parameters.linkedin_password)
+sleep(0.5)
+
+# locate submit button by_xpath
+sign_in_button = driver.find_element_by_class_name('sign-in-form__submit-button')
+
+# .click() to mimic button click
+sign_in_button.click()
+
+
 
 def scroll_down():
     SCROLL_PAUSE_TIME=4
