@@ -11,6 +11,7 @@ import parameters
 from bs4 import BeautifulSoup
 import pandas as pd
 import random
+import re
 
 # if field is present pass if field:pas if field is not present print text else:
 def validate_field(field):
@@ -24,6 +25,8 @@ info = {'name' : [],
     'Duration' : [],
     'location' : [],
     'education' : [],
+    'nbr_employees' :[],
+    'work_field' :[],
     'linkedin_url': []
     }
 # specifies the path to the chromedriver.exe
@@ -71,17 +74,19 @@ def scroll_down():
         height=max_height'''
 
 #Getting the collected Linkedin urls
-url_fl = open(parameters.urls_file_name, "r")
+'''url_fl = open(parameters.urls_file_name, "r")
 linkedin_urls = []
 for line in url_fl:
   stripped_line = line.strip()
   linkedin_urls.append(stripped_line)
-url_fl.close()
+url_fl.close()'''
 
-
+#Getting reactions Linkedin urls
+url_data = pd.read_csv('reactions.csv')
+linkedin_urls = url_data['profile_link']
 # For loop to iterate over each URL in the list
 
-linkedin_urls = linkedin_urls[0:19]
+linkedin_url = linkedin_urls[0]
 
 
 for linkedin_url in linkedin_urls:
@@ -90,17 +95,16 @@ for linkedin_url in linkedin_urls:
     driver.get(linkedin_url)
     
     # add a 5 second pause loading each URL
-    sleep(random.randint(500,1000)/1000)
-    
-    
-    scroll_down()
+    for i in range(3):
+        sleep(random.randint(500,1000)/1000)
+        scroll_down()
     
     # assigning the source code for the webpage to variable sel
     sel = driver.page_source
     soup = BeautifulSoup(sel, 'lxml')
     
     
-    name_div=soup.find('div',{'class' : 'flex-1 mr5'})
+    #name_div=soup.find('div',{'class' : 'flex-1 mr5'})
     
         
     try:
@@ -118,10 +122,12 @@ for linkedin_url in linkedin_urls:
         if len(place_holder)>1:
             entreprise_name = place_holder[0].span.text.strip()
             education = place_holder[1].span.text.strip()
-        else:
+        elif len(place_holder) == 1 :
             education = place_holder[0].span.text.strip()
             entreprise_name = 'Currently Unemployed'
-            
+        else: 
+            education = ''
+            entreprise_name = 'Currently Unemployed'
         exp_section=soup.find('section',{'id' : 'experience-section'}).ul.li
         #place_holder = exp_section.find_all('div',{'class' : 'pv-entity__summary-info pv-entity__summary-info--background-section mb2'})
         place_holder = exp_section.find('h4')
@@ -141,6 +147,41 @@ for linkedin_url in linkedin_urls:
         #Duration=''
         #job_title=''
         #job_duration=''
+ 
+    '''try:
+        place_holder =soup.find('section', {'class' : 'pv-profile-section pv-interests-section artdeco-card mt4 p5 ember-view'}).ul
+        elements = place_holder.find_all('li', {'class' : 'pv-interest-entity pv-profile-section__card-item ember-view'})
+            
+    except AttributeError:
+        interests = '''
+        
+    try :
+        exp_section = soup.find('section',{'id' : 'experience-section'})
+        link = exp_section.find('a',{'class' : 'full-width ember-view'})['href']
+        if link[0:8] != '/company' :
+            print('no')
+            work_field = ''
+            nbr_employees = ''
+        else: 
+            link = 'https://www.linkedin.com'  + link
+            driver.get(link)
+            sleep(random.randint(500,1000)/1000)
+            scroll_down()
+            sel = driver.page_source
+            soup = BeautifulSoup(sel, 'lxml')
+            work_field = soup.find('div', {'class' : 'org-top-card-summary-info-list__info-item'}).text.strip()
+            place_holder = soup.find('div', {'class': 'mt1'}).div
+            nbr_employees = place_holder.find_all('a', {'class' : 'ember-view'})[-1].span.text.strip()
+            l_temp = re.findall(r'\b\d+\b', nbr_employees)
+            if len(l_temp)>1:
+                nbr_employees = l_temp[0]*1000+l_temp[1]
+            else:
+                nbr_employees = l_temp[0]
+            #nbr_employees = [int(s) for s in nbr_employees.split() if s.isdigit()][0]
+    except AttributeError:
+        work_field = ''
+        nbr_employees = ''
+    
         
         
 
@@ -151,9 +192,9 @@ for linkedin_url in linkedin_urls:
     info['location'].append(location)
     info['education'].append(education)
     info['linkedin_url'].append(linkedin_url)
-
-
-
+    info['work_field'].append(work_field)
+    info['nbr_employees'].append(nbr_employees)
+    
     name = None
     profile_title = None
     entreprise_name = None

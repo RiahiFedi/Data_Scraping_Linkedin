@@ -42,9 +42,10 @@ sign_in_button.click()
 
 driver.get('https://www.linkedin.com/posts/attijari-bank-tunisie_attijari-bank-espace-libre-service-bancaire-activity-6769179416443547648-N-K0/')
 sleep(random.randint(500,1000)/1000)
-
+scroll_down()
 # locate the reactions pannel
-react_pannel = driver.find_element(By.XPATH, '//*[@id="ember77"]/ul/li[1]/button')
+react_pannel = driver.find_element_by_class_name('social-details-social-counts')
+react_pannel = react_pannel.find_element(By.XPATH, '//li[1]/button')
 actions = ActionChains(driver)
 actions.move_to_element(react_pannel).perform()
 react_pannel.click()
@@ -75,3 +76,4 @@ for el in profile_elements:
     
 df = pd.DataFrame(data=info)
 df.to_csv('reactions.csv')
+driver.quit()
