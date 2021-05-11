@@ -9,18 +9,23 @@ import csv
 from time import sleep
 import parameters 
 from bs4 import BeautifulSoup
+import pandas as pd
+import random
 
 # if field is present pass if field:pas if field is not present print text else:
 def validate_field(field):
     if type(field) is not str:
        field = 'No results'
     return field
-# defining new variable passing two parameters
-writer = csv.writer(open("test_data_frame", 'w'))
 
-# writerow() method to the write to the file object
-writer.writerow(['Name', 'Job Title', 'Company', 'Duration', 'Location', 'URL'])
-
+info = {'name' : [],
+    'profile_title' : [], 
+    'entreprise_name' : [],
+    'Duration' : [],
+    'location' : [],
+    'education' : [],
+    'linkedin_url': []
+    }
 # specifies the path to the chromedriver.exe
 driver = webdriver.Chrome('C:/Users/fedir/Data_Scraping_Linkedin/chromedriver')
 
@@ -35,14 +40,14 @@ username = driver.find_element_by_id('session_key')
 username.send_keys(parameters.linkedin_username)
 
 # sleep for 0.5 seconds
-sleep(0.5)
+sleep(random.randint(500,1000)/1000)
 
 # locate password form by_class_name
 password = driver.find_element_by_id('session_password')
 
 # send_keys() to simulate key strokes
 password.send_keys(parameters.linkedin_password)
-sleep(0.5)
+sleep(random.randint(500,1000)/1000)
 
 # locate submit button by_xpath
 sign_in_button = driver.find_element_by_class_name('sign-in-form__submit-button')
@@ -53,7 +58,7 @@ sign_in_button.click()
 
 
 def scroll_down():
-    SCROLL_PAUSE_TIME=4
+    SCROLL_PAUSE_TIME = random.randint(500,1000)/1000
     #height=driver.execute_script("return document.body.scrollHeight")
     driver.execute_script("window.scrollTo({top: document.body.scrollHeight,left: 0,behavior: 'smooth'});")
     sleep(SCROLL_PAUSE_TIME)
@@ -73,15 +78,10 @@ for line in url_fl:
   linkedin_urls.append(stripped_line)
 url_fl.close()
 
-f = open(parameters.file_name, 'w')
-writer = csv.writer(f)
-
-# writerow() method to the write to the file object
-writer.writerow(['Name','Job Title','Company','Duration', 'Location','Education','URL'])
 
 # For loop to iterate over each URL in the list
 
-linkedin_url = linkedin_urls[4]
+linkedin_urls = linkedin_urls[0:19]
 
 
 for linkedin_url in linkedin_urls:
@@ -90,7 +90,7 @@ for linkedin_url in linkedin_urls:
     driver.get(linkedin_url)
     
     # add a 5 second pause loading each URL
-    sleep(5)
+    sleep(random.randint(500,1000)/1000)
     
     
     scroll_down()
@@ -102,7 +102,6 @@ for linkedin_url in linkedin_urls:
     
     name_div=soup.find('div',{'class' : 'flex-1 mr5'})
     
-    info=[]
         
     try:
         name_div=soup.find('div',{'class' : 'flex-1 mr5 pv-top-card__list-container'})
@@ -145,26 +144,14 @@ for linkedin_url in linkedin_urls:
         
         
 
-    info.append(name)
-    info.append(profile_title)
-    info.append(entreprise_name)
-    info.append(Duration)
-    info.append(location)
-    info.append(education)
-    info.append(linkedin_url)
-    #info.append(job_title)
-    #info.append(job_duration)
-    #info.append(extract_mail())
-    #info.append(extract_birthday())
-    print(info)
+    info['name'].append(name)
+    info['profile_title'].append(profile_title)
+    info['entreprise_name'].append(entreprise_name)
+    info['Duration'].append(Duration)
+    info['location'].append(location)
+    info['education'].append(education)
+    info['linkedin_url'].append(linkedin_url)
 
-    writer.writerow([name.encode('utf-8'),
-             profile_title.encode('utf-8'),
-             entreprise_name.encode('utf-8'),
-             Duration.encode('utf-8'),
-             location.encode('utf-8'),
-             education.encode('utf-8'),
-             linkedin_url.encode('utf-8')])
 
 
     name = None
@@ -175,8 +162,10 @@ for linkedin_url in linkedin_urls:
 
    
 # terminates the application
-# terminates the application
 driver.quit()
-f.close()
+
+#Saves the data as a csv file
+df = pd.DataFrame(data=info)
+df.to_csv('results_file.csv', encoding = 'utf-8-sig')
 
 

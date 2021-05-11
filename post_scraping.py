@@ -32,16 +32,16 @@ driver = webdriver.Chrome('C:/Users/fedir/Data_Scraping_Linkedin/chromedriver')
 driver.get('https://www.linkedin.com')
 username = driver.find_element_by_id('session_key')
 username.send_keys(parameters.linkedin_username)
-sleep(0.5)
+sleep(random.randint(500,1000)/1000)
 password = driver.find_element_by_id('session_password')
 password.send_keys(parameters.linkedin_password)
-sleep(0.5)
+sleep(random.randint(500,1000)/1000)
 sign_in_button = driver.find_element_by_class_name('sign-in-form__submit-button')
 sign_in_button.click()
 
 
 driver.get('https://www.linkedin.com/posts/attijari-bank-tunisie_attijari-bank-espace-libre-service-bancaire-activity-6769179416443547648-N-K0/')
-sleep(1)
+sleep(random.randint(500,1000)/1000)
 
 # locate the reactions pannel
 react_pannel = driver.find_element(By.XPATH, '//*[@id="ember77"]/ul/li[1]/button')
