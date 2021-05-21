@@ -86,7 +86,7 @@ url_data = pd.read_csv('reactions.csv')
 linkedin_urls = url_data['profile_link']
 # For loop to iterate over each URL in the list
 
-linkedin_url = linkedin_urls[0]
+linkedin_url = linkedin_urls[9]
 
 
 for linkedin_url in linkedin_urls:
@@ -108,26 +108,32 @@ for linkedin_url in linkedin_urls:
     
         
     try:
-        name_div=soup.find('div',{'class' : 'flex-1 mr5 pv-top-card__list-container'})
-        name_loc=name_div.find_all('ul')
+        name_div=soup.find('div',{'class' : 'pv-text-details__left-panel mr5'})
+        name_loc=name_div.find_all('div')
         
-        name=name_loc[0].li.text.strip()
-        location=name_loc[1].li.text.strip()
-        profile_title=name_div.h2.text.strip()
+        name=name_loc[0].h1.text.strip()
+        profile_title=name_loc[1].text.strip()
+        location=name_loc[2].span.text.strip()
         
-        big_div = soup.find('div',{'class' : 'display-flex mt2 pv-top-card--reflow'})
-        work_div = big_div.find_all('div')
-        place_holder = work_div[1].find_all('a', {'class' : 'pv-top-card--experience-list-item'})
+        big_div = soup.find('ul',{'class' : 'pv-text-details__right-panel'})
+        place_holder = big_div.find_all('li')
+        #place_holder = work_div[1].find_all('a', {'class' : 'pv-top-card--experience-list-item'})
         
         if len(place_holder)>1:
-            entreprise_name = place_holder[0].span.text.strip()
-            education = place_holder[1].span.text.strip()
+            entreprise_name = place_holder[0].a.h2.div.text.strip()
+            education = place_holder[1].a.h2.div.text.strip()
         elif len(place_holder) == 1 :
-            education = place_holder[0].span.text.strip()
-            entreprise_name = 'Currently Unemployed'
+            test = place_holder[0].a.h2.div['aria-label']
+            if test == 'Current company':
+                entreprise_name = place_holder[0].a.h2.div.text.strip()
+                education = ''
+            elif test == 'Education':
+                education = place_holder[0].a.h2.div.text.strip()
+                entreprise_name = 'Currently Unemployed'
         else: 
             education = ''
             entreprise_name = 'Currently Unemployed'
+            
         exp_section=soup.find('section',{'id' : 'experience-section'}).ul.li
         #place_holder = exp_section.find_all('div',{'class' : 'pv-entity__summary-info pv-entity__summary-info--background-section mb2'})
         place_holder = exp_section.find('h4')
@@ -174,9 +180,9 @@ for linkedin_url in linkedin_urls:
             nbr_employees = place_holder.find_all('a', {'class' : 'ember-view'})[-1].span.text.strip()
             l_temp = re.findall(r'\b\d+\b', nbr_employees)
             if len(l_temp)>1:
-                nbr_employees = l_temp[0]*1000+l_temp[1]
+                nbr_employees = int(l_temp[0])*1000+ int(l_temp[1])
             else:
-                nbr_employees = l_temp[0]
+                nbr_employees = int(l_temp[0])
             #nbr_employees = [int(s) for s in nbr_employees.split() if s.isdigit()][0]
     except AttributeError:
         work_field = ''
