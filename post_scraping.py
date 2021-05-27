@@ -40,7 +40,8 @@ sign_in_button = driver.find_element_by_class_name('sign-in-form__submit-button'
 sign_in_button.click()
 
 
-driver.get('https://www.linkedin.com/posts/attijari-bank-tunisie_attijari-bank-espace-libre-service-bancaire-activity-6769179416443547648-N-K0/')
+#driver.get('https://www.linkedin.com/posts/attijari-bank-tunisie_attijari-bank-espace-libre-service-bancaire-activity-6769179416443547648-N-K0/')
+driver.get('https://www.linkedin.com/posts/zitouna-bank_banque-zitouna-continue-%C3%A0-d%C3%A9velopper-ses-activity-6793113131682955264-Kisi/')
 sleep(random.randint(500,1000)/1000)
 scroll_down()
 # locate the reactions pannel
@@ -61,7 +62,7 @@ soup = BeautifulSoup(sel, 'lxml')
 place_holder = soup.find('div',{'class' : 'artdeco-modal__content social-details-reactors-modal__content ember-view'})
 profile_elements = place_holder.find_all('li',{'class' : 'artdeco-list__item'})
 
-info = {'name' : [], 'profile_link' : [], 'reaction' : []}
+info = {'name' : [], 'linkedin_url' : [], 'reaction' : []}
 
 
 
@@ -71,7 +72,7 @@ for el in profile_elements:
     reaction = el.find('img',{'class' : 'reactions-icon social-details-reactors-tab-body__icon reactions-icon__consumption--small'})['alt']
     
     info['name'].append(name)
-    info['profile_link'].append(url)
+    info['linkedin_url'].append(url)
     info['reaction'].append(reaction)
     
 df = pd.DataFrame(data=info)

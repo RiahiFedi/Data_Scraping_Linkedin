@@ -12,6 +12,8 @@ from bs4 import BeautifulSoup
 import pandas as pd
 import random
 import re
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.action_chains import ActionChains
 
 # if field is present pass if field:pas if field is not present print text else:
 def validate_field(field):
@@ -22,13 +24,15 @@ def validate_field(field):
 info = {'name' : [],
     'profile_title' : [], 
     'entreprise_name' : [],
-    'Duration' : [],
+    'duration' : [],
+    'experience' : [],
     'location' : [],
     'education' : [],
     'nbr_employees' :[],
     'work_field' :[],
     'linkedin_url': []
     }
+profiles_so_far = 0
 # specifies the path to the chromedriver.exe
 driver = webdriver.Chrome('C:/Users/fedir/Data_Scraping_Linkedin/chromedriver')
 
@@ -83,16 +87,17 @@ url_fl.close()'''
 
 #Getting reactions Linkedin urls
 url_data = pd.read_csv('reactions.csv')
-linkedin_urls = url_data['profile_link']
+linkedin_urls = url_data['linkedin_url']
 # For loop to iterate over each URL in the list
 
-linkedin_url = linkedin_urls[9]
+linkedin_url = linkedin_urls[141]
 
 
-for linkedin_url in linkedin_urls:
+for j in range(0,len(linkedin_urls)):
   
     # get the profile URL 
-    driver.get(linkedin_url)
+    #driver.get(linkedin_url)
+    driver.get(linkedin_urls[j])
     
     # add a 5 second pause loading each URL
     for i in range(3):
@@ -104,6 +109,22 @@ for linkedin_url in linkedin_urls:
     soup = BeautifulSoup(sel, 'lxml')
     
     
+    try:
+        exp_section=soup.find('section',{'id' : 'experience-section'})
+        if len( exp_section.find_all('div',{'class' : 'pv-experience-section__see-more pv-profile-section__actions-inline ember-view'})) > 0:
+            # locate the reactions pannel
+            #more_pannel = driver.find_element_by_class_name('pv-experience-section__see-more pv-profile-section__actions-inline ember-view')
+            more_pannel = driver.find_element(By.XPATH, '//*[@class="pv-experience-section__see-more pv-profile-section__actions-inline ember-view"]')
+            actions = ActionChains(driver)
+            actions.move_to_element(more_pannel).perform()
+            more_pannel = more_pannel.find_elements(By.XPATH, '//*[@class="pv-profile-section__see-more-inline pv-profile-section__text-truncate-toggle artdeco-button artdeco-button--tertiary artdeco-button--muted"]')[-1]
+            actions = ActionChains(driver)
+            more_pannel.click()
+        
+        sel = driver.page_source
+        soup = BeautifulSoup(sel, 'lxml')
+    except AttributeError:
+        print('no xp')
     #name_div=soup.find('div',{'class' : 'flex-1 mr5'})
     
         
@@ -133,24 +154,33 @@ for linkedin_url in linkedin_urls:
         else: 
             education = ''
             entreprise_name = 'Currently Unemployed'
-            
-        exp_section=soup.find('section',{'id' : 'experience-section'}).ul.li
-        #place_holder = exp_section.find_all('div',{'class' : 'pv-entity__summary-info pv-entity__summary-info--background-section mb2'})
-        place_holder = exp_section.find('h4')
-        place_holder = place_holder.find_all('span')
-        Duration = place_holder[1].text.strip()
-        
-        
-        #exp_section=soup.find('section',{'id' : 'experience-section'}).ul.li.div.a
-        #entreprise_name=exp_section.find('h3').text.strip().replace('Nom de l’entreprise','').strip()
-        #Duration=exp_section.find('h4').text.strip().replace('Durée totale','').strip()
-        #job_div=soup.find('div',{'class': 'pv-entity__summary-info-v2 pv-entity__summary-info--background-section pv-entity__summary-info-margin-top'})
-        #job_title=job_div.find('h3').text.strip().replace('Poste','').strip()
-        #job_duration=job_div.find('span',{'class':'pv-entity__bullet-item-v2'}).text.strip() 
-        
     except AttributeError:
-        print('lol')
-        #Duration=''
+        print('name') 
+        
+    try:
+        exp_section=soup.find('section',{'id' : 'experience-section'}).ul.li
+        if not exp_section.find_all('ul'):
+        #place_holder = exp_section.find_all('div',{'class' : 'pv-entity__summary-info pv-entity__summary-info--background-section mb2'})
+            place_holder = exp_section.find('h4')
+            place_holder = place_holder.find_all('span')
+            Duration = place_holder[1].text.strip()
+        else:
+            place_holder = exp_section.find_all('ul')[0].find_all('li')
+            
+            if len(place_holder[0].find_all('div',{'class' : 'display-flex'})) > 1 :
+                last_ = place_holder[0].find_all('div',{'class' : 'display-flex'})[1].h4.find_all('span')[1].text.strip()
+                first_ = place_holder[-1].find_all('div',{'class' : 'display-flex'})[1].h4.find_all('span')[1].text.strip()
+                
+            else:
+                last_ = place_holder[0].find('div',{'class' : 'display-flex'}).h4.find_all('span')[1].text.strip()
+                first_ = place_holder[-1].find('div',{'class' : 'display-flex'}).h4.find_all('span')[1].text.strip()
+            
+            dates = first_.split('–') + last_.split('–')
+            Duration = dates[0] + '–' + dates[-1]
+            
+    except AttributeError:
+        print('duration')
+        Duration=''
         #job_title=''
         #job_duration=''
  
@@ -160,6 +190,30 @@ for linkedin_url in linkedin_urls:
             
     except AttributeError:
         interests = '''
+        
+    try :
+        exp_section=soup.find('section',{'id' : 'experience-section'}).ul
+        job_list = exp_section.find_all('li',{'class':'pv-entity__position-group-pager pv-profile-section__list-item ember-view'})
+        if not job_list[-1].find_all('ul'):
+            place_holder = job_list[-1].find('h4')
+            place_holder = place_holder.find_all('span')
+            first_job = place_holder[1].text.strip()
+            dates = first_job.split('–') + Duration.split('–')
+            total_exp = dates[0] + '–' + dates[-1]
+        else:
+            place_holder = job_list[-1].find_all('ul')[0].find_all('li')
+            if len(place_holder[0].find_all('div',{'class' : 'display-flex'})) > 1 :
+                first_job = place_holder[-1].find_all('div',{'class' : 'display-flex'})[1].h4.find_all('span')[1].text.strip()
+                
+            else:
+                first_job = place_holder[-1].find('div',{'class' : 'display-flex'}).h4.find_all('span')[1].text.strip()
+            
+    except AttributeError: 
+        total_exp = ''       
+
+
+        
+       
         
     try :
         exp_section = soup.find('section',{'id' : 'experience-section'})
@@ -188,24 +242,29 @@ for linkedin_url in linkedin_urls:
         work_field = ''
         nbr_employees = ''
     
+
         
         
 
     info['name'].append(name)
     info['profile_title'].append(profile_title)
     info['entreprise_name'].append(entreprise_name)
-    info['Duration'].append(Duration)
+    info['duration'].append(Duration)
+    info['experience'].append(total_exp)
     info['location'].append(location)
     info['education'].append(education)
-    info['linkedin_url'].append(linkedin_url)
+    info['linkedin_url'].append(linkedin_urls[j])
     info['work_field'].append(work_field)
     info['nbr_employees'].append(nbr_employees)
+
     
     name = None
     profile_title = None
     entreprise_name = None
     Duration = None
     location = None
+    profiles_so_far +=1
+    print(profiles_so_far)
 
    
 # terminates the application
