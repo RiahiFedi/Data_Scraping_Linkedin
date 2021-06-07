@@ -101,7 +101,8 @@ df['experience'] = df['experience'].fillna('0')
 df['duration'] = df['duration'].fillna('0')
 df['location'] = df['location'].fillna('unknown')
 df['nbr_employees'] = df['nbr_employees'].fillna(0)
-df['work_field'] = df['work_field'].fillna('unemployed')
+df.loc[df.duration == '0', 'work_field'] = "unemployed"
+df['work_field'] = df['work_field'].fillna('unknown')
 df = df.dropna()
         
 l = df['location']
@@ -124,5 +125,8 @@ df['total_experience'] = dur2
 
 
 df = df.drop(columns=['duration','experience','location'])
+df.loc[df.reaction == 'INTEREST', 'reaction'] = 'PRAISE'
+df.loc[df.reaction == 'MAYBE', 'reaction'] = 'EMPATHY'
+
 
 df.to_csv('results_file_processed.csv', encoding = 'utf-8-sig',index = False,sep = ',')

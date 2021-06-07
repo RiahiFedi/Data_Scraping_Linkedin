@@ -14,5 +14,5 @@ urls_file_name = 'profiles_urls.txt'
 file_name = 'results_file.csv'
 
 # login credentials
-linkedin_username = 'fedi97riahi@gmail.com'
-linkedin_password = 'Mmpv*3kg'
+linkedin_username = 'fedi.riahi@outlook.com'
+linkedin_password = 'Zs1fb5huk8f r'
