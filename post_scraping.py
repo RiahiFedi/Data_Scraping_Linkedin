@@ -28,7 +28,7 @@ def scroll_down():
         height=max_height'''
 
 
-driver = webdriver.Chrome('C:/Users/fedir/Data_Scraping_Linkedin/chromedriver')
+driver = webdriver.Chrome(parameters.webdriver_Chrome_path)
 driver.get('https://www.linkedin.com')
 username = driver.find_element_by_id('session_key')
 username.send_keys(parameters.linkedin_username)
@@ -39,12 +39,19 @@ sleep(random.randint(500,1000)/1000)
 sign_in_button = driver.find_element_by_class_name('sign-in-form__submit-button')
 sign_in_button.click()
 
-urls = ['https://www.linkedin.com/posts/attijari-bank-tunisie_attijaribank-croireabrenabrvous-activity-6802540435110678528-aspH',\
+url_fl = open(parameters.urls_file_name, "r")
+urls = []
+for line in url_fl:
+  stripped_line = line.strip()
+  urls.append(stripped_line)
+url_fl.close()
+
+'''urls = ['https://www.linkedin.com/posts/attijari-bank-tunisie_attijaribank-croireabrenabrvous-activity-6802540435110678528-aspH',\
         'https://www.linkedin.com/posts/stb-bank_cest-quoi-le-tmm-retrouvez-une-explication-activity-6741729911691706368-WYvB',
         'https://www.linkedin.com/posts/arabtunisianbank_atbabrmobile-activity-6759467489257697280-nqRB',
         'https://www.linkedin.com/posts/amen-bank_amen-first-bank-est-la-1%C3%A8re-banque-100-en-activity-6803375772187922432-CMx2',
         'https://www.linkedin.com/posts/zitouna-bank_vous-%C3%AAtes-un-professionnel-et-vous-cherchez-activity-6802516675674562560-i4by'
-        ]
+        ]'''
 info = {'name' : [], 'linkedin_url' : [], 'reaction' : []}
 for i in range(len(urls)):
     #driver.get('https://www.linkedin.com/posts/attijari-bank-tunisie_attijari-bank-espace-libre-service-bancaire-activity-6769179416443547648-N-K0/')
@@ -84,6 +91,6 @@ for i in range(len(urls)):
         info['reaction'].append(reaction)
         
     df = pd.DataFrame(data=info)
-    df.to_csv('reactions' + str(i) + '.csv')
+    #df.to_csv('reactions' + str(i) + '.csv')
 df.to_csv('reactions.csv')
 driver.quit()

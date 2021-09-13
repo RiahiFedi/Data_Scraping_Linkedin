@@ -10,15 +10,38 @@ import pandas as pd
 from datetime import datetime
 
 
-data = pd.read_csv('results_file.csv')
+data = pd.read_csv('results_file0.csv')
 reaction = pd.read_csv('reactions.csv')
+
+data = pd.read_csv('results_file_processed00.csv')
+reaction = pd.read_csv('results_file_processed.csv')
+
+l = range(104)
+data = data.iloc[l]
+reaction = reaction.iloc[l]
+
 data.columns
 data.info()
 reaction.columns
 reaction.info()
 
+data = data.drop(['duration','experience','location'],axis = 1)
+data.info()
+data.sort_values("linkedin_url", inplace = True)
+data.drop_duplicates(subset = 'linkedin_url',keep = False, inplace = True)
+
+resutls = pd.concat([data,reaction])
+resutls = resutls.drop(['duration','experience','location'],axis = 1)
+resutls.sort_values("name_x", inplace = True)
+resutls.drop_duplicates(subset = 'name_x',keep = False, inplace = True)
+resutls.info()
+
+resutls.to_csv('results_file_processed2.csv', encoding = 'utf-8-sig',index = False,sep = ',')
+
 
 df = pd.merge(data,reaction,on='linkedin_url')
+
+
 df.columns
 df = df.drop(columns=['Unnamed: 0_x','Unnamed: 0_y','name_y','education'])
 
@@ -96,37 +119,39 @@ def region_class(location):
         else:
             return 'unknown'
         
+def data_process(df):
+    df['experience'] = df['experience'].fillna('0')
+    df['duration'] = df['duration'].fillna('0')
+    df['location'] = df['location'].fillna('unknown')
+    df['nbr_employees'] = df['nbr_employees'].fillna(0)
+    df.loc[df.duration == '0', 'work_field'] = "unemployed"
+    df['work_field'] = df['work_field'].fillna('unknown')
+    df = df.dropna()
+            
+    l = df['location']
+    reg = []
+    for i in l:
+        reg.append(region_class(i))
+    df['region'] = reg
+                   
+    t1 = df['duration']
+    dur1 = []
+    for i in t1:
+        dur1.append(calc_time(i))
+    df['current_job_duration'] = dur1
+    
+    t2 = df['experience']
+    dur2 = []
+    for i in t2:
+        dur2.append(calc_time(i))
+    df['total_experience'] = dur2
+    
+    if 'reaction' in df.columns:
+        df = df.drop(columns=['duration','experience','location'])
+        df.loc[df.reaction == 'INTEREST', 'reaction'] = 'PRAISE'
+        df.loc[df.reaction == 'MAYBE', 'reaction'] = 'EMPATHY'
+    return df
 
-df['experience'] = df['experience'].fillna('0')
-df['duration'] = df['duration'].fillna('0')
-df['location'] = df['location'].fillna('unknown')
-df['nbr_employees'] = df['nbr_employees'].fillna(0)
-df.loc[df.duration == '0', 'work_field'] = "unemployed"
-df['work_field'] = df['work_field'].fillna('unknown')
-df = df.dropna()
-        
-l = df['location']
-reg = []
-for i in l:
-    reg.append(region_class(i))
-df['region'] = reg
-               
-t1 = df['duration']
-dur1 = []
-for i in t1:
-    dur1.append(calc_time(i))
-df['current_job_duration'] = dur1
+df = data_process(df)
 
-t2 = df['experience']
-dur2 = []
-for i in t2:
-    dur2.append(calc_time(i))
-df['total_experience'] = dur2
-
-
-df = df.drop(columns=['duration','experience','location'])
-df.loc[df.reaction == 'INTEREST', 'reaction'] = 'PRAISE'
-df.loc[df.reaction == 'MAYBE', 'reaction'] = 'EMPATHY'
-
-
-df.to_csv('results_file_processed.csv', encoding = 'utf-8-sig',index = False,sep = ',')
+df.to_csv('results_file_processed00.csv', encoding = 'utf-8-sig',index = False,sep = ',')

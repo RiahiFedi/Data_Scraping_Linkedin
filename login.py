@@ -20,7 +20,7 @@ def validate_field(field):
     if type(field) is not str:
        field = 'No results'
     return field
-companies_info = pd.read_csv('companies_info_full.csv')
+#companies_info = pd.read_csv('companies_info_full.csv')
 '''companies_info =pd.DataFrame(data= {
     'field':[],
     'comp_url':[],
@@ -232,25 +232,23 @@ for j in range(0,len(linkedin_urls)):
             nbr_employees = ''
         else: 
             link = 'https://www.linkedin.com'  + link
-            if not link in list(companies_info['comp_url']):
-                driver.get(link)
-                sleep(random.randint(500,1000)/1000)
-                scroll_down()
-                sel = driver.page_source
-                soup = BeautifulSoup(sel, 'lxml')
-                work_field = soup.find('div', {'class' : 'org-top-card-summary-info-list__info-item'}).text.strip()
-                place_holder = soup.find('div', {'class': 'mt1'}).div
-                nbr_employees = place_holder.find_all('a', {'class' : 'ember-view'})[-1].span.text.strip()
-                l_temp = re.findall(r'\b\d+\b', nbr_employees)
-                if len(l_temp)>1:
-                    nbr_employees = int(l_temp[0])*1000+ int(l_temp[1])
-                else:
-                    nbr_employees = int(l_temp[0])
-                #nbr_employees = [int(s) for s in nbr_employees.split() if s.isdigit()][0]
-                companies_info =companies_info.append({'field' : work_field,'comp_url': link,'nbr_employees':nbr_employees},ignore_index=True)
+
+            driver.get(link)
+            sleep(random.randint(500,1000)/1000)
+            scroll_down()
+            sel = driver.page_source
+            soup = BeautifulSoup(sel, 'lxml')
+            work_field = soup.find('div', {'class' : 'org-top-card-summary-info-list__info-item'}).text.strip()
+            place_holder = soup.find('div', {'class': 'mt1'}).div
+            nbr_employees = place_holder.find_all('a', {'class' : 'ember-view'})[-1].span.text.strip()
+            l_temp = re.findall(r'\b\d+\b', nbr_employees)
+            if len(l_temp)>1:
+                nbr_employees = int(l_temp[0])*1000+ int(l_temp[1])
             else:
-                nbr_employees = list(companies_info[companies_info['comp_url']==link]['nbr_employees'])[0]
-                work_field = list(companies_info[companies_info['comp_url']==link]['field'])[0]
+                nbr_employees = int(l_temp[0])
+            #nbr_employees = [int(s) for s in nbr_employees.split() if s.isdigit()][0]
+           
+
     except AttributeError:
         work_field = ''
         nbr_employees = ''
@@ -285,7 +283,7 @@ driver.quit()
 
 #Saves the data as a csv file
 df = pd.DataFrame(data=info)
-companies_info.to_csv('companies_info_full.csv')
+#companies_info.to_csv('companies_info_full.csv')
 df.to_csv('results_file.csv', encoding = 'utf-8-sig')
 
 

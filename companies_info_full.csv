@@ -1,12 +1,38 @@
-,Unnamed: 0,Unnamed: 0.1,field,comp_url,nbr_employees
-0,0.0,0.0,Banking,https://www.linkedin.com/company/attijari-bank/,1136.0
-1,1.0,1.0,Marketing & Advertising,https://www.linkedin.com/company/iris-junior-entreprise/,42.0
-2,2.0,2.0,Transportation/Trucking/Railroad,https://www.linkedin.com/company/transtu-la-soci%C3%A9t%C3%A9-des-transports-de-tunis/,352.0
-3,3.0,,Banking,https://www.linkedin.com/company/attijari-bank-tunisie/,453.0
-4,,,Government Administration,https://www.linkedin.com/company/ctie/,201.0
-5,,,Accounting,https://www.linkedin.com/company/kpmg/,187168.0
-6,,,Insurance,https://www.linkedin.com/company/lloyd-assurances/,167.0
-7,,,Automotive,https://www.linkedin.com/company/faurecia/,31740.0
-8,,,Insurance,https://www.linkedin.com/company/starassurances/,175.0
-9,,,"El Jem, Mahdia",https://www.linkedin.com/company/maklada-steel-wire-drawing/,60.0
-10,,,Capital Markets,https://www.linkedin.com/company/attijari-interm%C3%A9diation/,27.0
+,Unnamed: 0,Unnamed: 0.1,Unnamed: 0.1.1,field,comp_url,nbr_employees
+0,0.0,0.0,0.0,Banking,https://www.linkedin.com/company/attijari-bank/,1136.0
+1,1.0,1.0,1.0,Marketing & Advertising,https://www.linkedin.com/company/iris-junior-entreprise/,42.0
+2,2.0,2.0,2.0,Transportation/Trucking/Railroad,https://www.linkedin.com/company/transtu-la-soci%C3%A9t%C3%A9-des-transports-de-tunis/,352.0
+3,3.0,3.0,,Banking,https://www.linkedin.com/company/attijari-bank-tunisie/,453.0
+4,4.0,,,Government Administration,https://www.linkedin.com/company/ctie/,201.0
+5,5.0,,,Accounting,https://www.linkedin.com/company/kpmg/,187168.0
+6,6.0,,,Insurance,https://www.linkedin.com/company/lloyd-assurances/,167.0
+7,7.0,,,Automotive,https://www.linkedin.com/company/faurecia/,31740.0
+8,8.0,,,Insurance,https://www.linkedin.com/company/starassurances/,175.0
+9,9.0,,,"El Jem, Mahdia",https://www.linkedin.com/company/maklada-steel-wire-drawing/,60.0
+10,10.0,,,Capital Markets,https://www.linkedin.com/company/attijari-interm%C3%A9diation/,27.0
+11,,,,Program Development,https://www.linkedin.com/company/bfi-group/,128.0
+12,,,,Marketing & Advertising,https://www.linkedin.com/company/nationalpen/,1065.0
+13,,,,Banking,https://www.linkedin.com/company/attijariwafa-bank/,6944.0
+14,,,,Computer Software,https://www.linkedin.com/company/bfigroupe/,89.0
+15,,,,Banking,https://www.linkedin.com/company/ubci-groupe-bnp-paribas/,537.0
+16,,,,Investment Banking,https://www.linkedin.com/company/attijari-leasing/,58.0
+17,,,,Real Estate,https://www.linkedin.com/company/tecnocasa-tunisie/,116.0
+18,,,,Facilities Services,https://www.linkedin.com/company/fm-buildings-services/,5.0
+19,,,,Information Technology & Services,https://www.linkedin.com/company/groupe-dm/,7.0
+20,,,,Banking,https://www.linkedin.com/company/biat/,2268.0
+21,,,,Internet,https://www.linkedin.com/company/vistaprint/,3825.0
+22,,,,Accounting,https://www.linkedin.com/company/mazars/,19628.0
+23,,,,Professional Training & Coaching,https://www.linkedin.com/company/tunivisions-foundation/,140.0
+24,,,,Non-profit Organization Management,https://www.linkedin.com/company/handicapinternational/,2701.0
+25,,,,Banking,https://www.linkedin.com/company/bh-bank/,244.0
+26,,,,Insurance,https://www.linkedin.com/company/gat-assurances/,257.0
+27,,,,"Montfleury, Tunis",https://www.linkedin.com/company/essectunis/,75.0
+28,,,,Banking,https://www.linkedin.com/company/uib/,634.0
+29,,,,Banking,https://www.linkedin.com/company/stb-bank/,540.0
+30,,,,Banking,https://www.linkedin.com/company/bnp-paribas/,169589.0
+31,,,,Internet,https://www.linkedin.com/company/nostradamus-ict/,24.0
+32,,,,Information Technology & Services,https://www.linkedin.com/company/amazon-web-services/,86291.0
+33,,,,Financial Services,https://www.linkedin.com/company/advans-tunisie/,290.0
+34,,,,Venture Capital & Private Equity,https://www.linkedin.com/company/hult-prize-utm/,3.0
+35,,,,Mechanical Or Industrial Engineering,https://www.linkedin.com/company/ge/,222094.0
+36,,,,Financial Services,https://www.linkedin.com/company/tunisie-leasing-factoring/,146.0
